@@ -4,7 +4,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import EventDetails from './pages/EventDetails'
 
-import { BrowserRouter ,Route,Routes,Outlet} from 'react-router-dom'
+import { BrowserRouter ,Route,Routes, Outlet } from 'react-router-dom'
 import About from './pages/About'
 import Explore from './pages/Explore'
 import DashBoard from './pages/DashBoard'
