@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/Logo.png";
 
 function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,10 +54,10 @@ function Navbar() {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center">
+        <div>
           <img
             onClick={() => navigate("/")}
-            src="your-logo-path.png"
+            src={Logo}
             alt="Logo"
             className="h-16 w-auto cursor-pointer"
           />
@@ -128,19 +129,55 @@ function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile Menu */}
-        <div className="flex space-x-5 justify-around items-center">
-          <div className="md:hidden">
+        {/* Mobile Menu + Profile Icon */}
+        <div className="md:hidden flex items-center space-x-4">
+          {/* Profile Dropdown */}
+          <div className="relative" ref={dropdownRef}>
             <button
-              onClick={toggleMenu}
-              className="text-gray-700 text-2xl focus:outline-none"
+              onClick={toggleDropdown}
+              className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition focus:outline-none"
             >
-              {isMenuOpen ? <FaTimes /> : <FaBars />}
+              {/* Profile Icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6 text-gray-700"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2a5 5 0 100 10 5 5 0 000-10zM3.172 18.828A9 9 0 0112 14a9 9 0 018.828 4.828C19.874 20.463 16.133 22 12 22s-7.874-1.537-8.828-3.172z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                {dropdownOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleOptionSelect(option.action)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Hamburger Menu */}
+          <button
+            onClick={toggleMenu}
+            className="text-gray-700 text-2xl focus:outline-none"
+          >
+            {isMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-gray-100 border-t border-gray-300 shadow-lg">
           <div className="px-4 py-4">
