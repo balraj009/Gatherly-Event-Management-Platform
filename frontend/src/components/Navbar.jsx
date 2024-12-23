@@ -6,26 +6,51 @@ import Logo from "../assets/Logo.png";
 function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const [isDesktopDropdownOpen, setIsDesktopDropdownOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const desktopDropdownRef = useRef(null);
+  const mobileDropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const toggleDesktopDropdown = () => {
+    setIsDesktopDropdownOpen(!isDesktopDropdownOpen);
   };
 
-  // Close dropdown if clicked outside
+  const toggleMobileDropdown = () => {
+    setIsMobileDropdownOpen(!isMobileDropdownOpen);
+  };
+
+  // Close desktop dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
+        desktopDropdownRef.current &&
+        !desktopDropdownRef.current.contains(event.target) &&
+        !event.target.closest("a")
       ) {
-        setIsDropdownOpen(false);
+        setIsDesktopDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Close mobile dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        mobileDropdownRef.current &&
+        !mobileDropdownRef.current.contains(event.target) &&
+        !event.target.closest("a")
+      ) {
+        setIsMobileDropdownOpen(false);
       }
     };
 
@@ -40,14 +65,19 @@ function Navbar() {
   };
 
   const dropdownOptions = [
-    { label: "Profile", action: () => navigate("/profile") },
-    { label: "Dashboard", action: () => navigate("/dashboard") },
+    { label: "Profile", path: "/profile" },
+    { label: "Dashboard", path: "/dashboard" },
     { label: "Logout", action: () => console.log("Logout clicked") },
   ];
 
-  const handleOptionSelect = (action) => {
-    action(); // Execute the navigation or action
-    setIsDropdownOpen(false); // Close dropdown
+  const handleOptionSelect = (option) => {
+    if (option.path) {
+      navigate(option.path);
+    } else if (option.action) {
+      option.action();
+    }
+    setIsDesktopDropdownOpen(false); // Close dropdown for desktop
+    setIsMobileDropdownOpen(false); // Close dropdown for mobile
   };
 
   return (
@@ -92,13 +122,12 @@ function Navbar() {
             Explore
           </Link>
 
-          {/* Profile Icon with Dropdown */}
-          <div className="relative" ref={dropdownRef}>
+          {/* Desktop Profile Dropdown */}
+          <div className="relative" ref={desktopDropdownRef}>
             <button
-              onClick={toggleDropdown}
+              onClick={toggleDesktopDropdown}
               className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition focus:outline-none"
             >
-              {/* Profile Icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -113,12 +142,12 @@ function Navbar() {
               </svg>
             </button>
 
-            {isDropdownOpen && (
+            {isDesktopDropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 {dropdownOptions.map((option, index) => (
                   <div
                     key={index}
-                    onClick={() => handleOptionSelect(option.action)}
+                    onClick={() => handleOptionSelect(option)}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   >
                     {option.label}
@@ -131,13 +160,19 @@ function Navbar() {
 
         {/* Mobile Menu + Profile Icon */}
         <div className="md:hidden flex items-center space-x-4">
-          {/* Profile Dropdown */}
-          <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={toggleMenu}
+            className="text-gray-700 text-2xl focus:outline-none"
+          >
+            {isMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+
+          {/* Mobile Profile Dropdown */}
+          <div className="relative" ref={mobileDropdownRef}>
             <button
-              onClick={toggleDropdown}
+              onClick={toggleMobileDropdown}
               className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition focus:outline-none"
             >
-              {/* Profile Icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -152,12 +187,12 @@ function Navbar() {
               </svg>
             </button>
 
-            {isDropdownOpen && (
+            {isMobileDropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 {dropdownOptions.map((option, index) => (
                   <div
                     key={index}
-                    onClick={() => handleOptionSelect(option.action)}
+                    onClick={() => handleOptionSelect(option)}
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   >
                     {option.label}
@@ -166,14 +201,6 @@ function Navbar() {
               </div>
             )}
           </div>
-
-          {/* Hamburger Menu */}
-          <button
-            onClick={toggleMenu}
-            className="text-gray-700 text-2xl focus:outline-none"
-          >
-            {isMenuOpen ? <FaTimes /> : <FaBars />}
-          </button>
         </div>
       </div>
 
@@ -181,7 +208,6 @@ function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden bg-gray-100 border-t border-gray-300 shadow-lg">
           <div className="px-4 py-4">
-            {/* Search Bar for Mobile */}
             <div className="mb-4">
               <input
                 type="text"
@@ -197,8 +223,6 @@ function Navbar() {
                 Search
               </button>
             </div>
-
-            {/* Navigation Links */}
             <div className="space-y-4 text-gray-700 text-sm font-medium">
               <Link to="/postevents" className="block hover:text-blue-500 transition">
                 Post Events
