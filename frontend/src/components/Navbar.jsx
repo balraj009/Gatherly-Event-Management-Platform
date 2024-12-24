@@ -67,7 +67,7 @@ function Navbar() {
   const dropdownOptions = [
     { label: "Profile", path: "/profile" },
     { label: "Dashboard", path: "/dashboard" },
-    { label: "Logout", action: () => navigate('/signup') },
+    { label: "Login/SignUp", action: () => navigate('/signup') },
   ];
 
   const handleOptionSelect = (option) => {
