@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import events from "../data/events";
 
-import { useNavigate } from "react-router-dom";
-
 function Register() {
-
   const navigate = useNavigate();
   const { id } = useParams(); // Get event ID from URL
   const event = events.find((event) => event.id === Number(id)); // Find event by ID
@@ -29,8 +26,14 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.username) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
+
     console.log("Registered:", formData);
     alert("Registration successful!");
+    navigate(-1); // Navigate back to the previous page
   };
 
   if (!event) {
@@ -47,7 +50,7 @@ function Register() {
   return (
     <>
       <Navbar />
-      <div   className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
           <h1 className="text-2xl font-bold text-center text-blue-600 mb-4">
             Register for Event: {event.title}
@@ -82,7 +85,6 @@ function Register() {
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
-                required
                 className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Enter your age"
               />
@@ -97,7 +99,6 @@ function Register() {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                required
                 className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
               >
                 <option value="">Select</option>
@@ -117,7 +118,6 @@ function Register() {
                 name="profession"
                 value={formData.profession}
                 onChange={handleChange}
-                required
                 className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Enter your profession"
               />
@@ -156,7 +156,7 @@ function Register() {
             </div>
 
             {/* Submit Button */}
-            <button onSubmit={()=>{navigate(-1)}}
+            <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
             >

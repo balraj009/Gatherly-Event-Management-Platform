@@ -11,6 +11,8 @@ import DashBoard from './pages/DashBoard'
 import Profile from './pages/Profile'
 import PostEvents from './pages/PostEvents'
 import RegisterPage from './pages/Register'
+import Signup from './pages/Signup'
+import Login from './pages/Login'
 
 function App() {
 
@@ -60,7 +62,9 @@ function App() {
         </Route>
 
         <Route path="/explore/eventdetails/:id" element={<EventDetails />} /> {/* Dynamic route */}
-        <Route path="/register/:id" element={<RegisterPage />} />
+        <Route path="/register/:id" element={<RegisterPage />} /> 
+        <Route path='/signup' element={<Signup/>} ></Route>
+        <Route path='/signin' element={<Login/>} ></Route>
        </Routes>
    </BrowserRouter>
   )
